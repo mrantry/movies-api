@@ -1,4 +1,5 @@
 const db = require("../db/db");
+const { formatToUSD } = require("../util/moviesUtil");
 
 exports.getMovies = async ({ page = 1, pageSize = 50 }) => {
   // Calculate offset for pagination
@@ -12,7 +13,11 @@ exports.getMovies = async ({ page = 1, pageSize = 50 }) => {
 
   // Execute the query with the limit and offset parameters
   const movies = await db.all(sql, [pageSize, offset]);
-  return movies;
+  const formattedMovies = movies.map((movie) => ({
+    ...movie,
+    budget: formatToUSD(movie.budget),
+  }));
+  return formattedMovies;
 };
 
 exports.getMovieDetails = async (imdb_id) => {

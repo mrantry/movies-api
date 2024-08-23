@@ -34,6 +34,14 @@ describe("Movies Service", () => {
       expect(page2.length).toBe(50);
       expect(page1).not.toEqual(page2);
     });
+
+    test("should format the budget to USD", async () => {
+      const movies = await moviesService.getMovies({});
+      const dollarRegex = /^\$\d+(,\d{3})*(\.\d{2})?$/;
+      movies.forEach((movie) => {
+        expect(movie.budget).toMatch(dollarRegex);
+      });
+    });
   });
 
   describe("get movie details", () => {
