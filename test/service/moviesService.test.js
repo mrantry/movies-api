@@ -2,8 +2,6 @@ const moviesService = require("../../src/service/moviesService");
 
 describe("Movies Service", () => {
   describe("list all movies", () => {
-    // imdb id, title, genres, release date, budget
-
     test("should fetch all movies with a limit of 50", async () => {
       const movies = await moviesService.getMovies({});
       expect(movies.length).toBe(50);
