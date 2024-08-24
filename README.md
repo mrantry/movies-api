@@ -14,6 +14,7 @@ This project is a Node.js-based Movie API service that provides endpoints to ret
 ## Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/mrantry/movie-api-service.git
    cd movie-api-service
@@ -104,3 +105,4 @@ Test cases cover:
 - **API Documentation**: Integrate Swagger for interactive API documentation.
 - **Parameterized Queries**: All SQL queries could be parameterized to prevent SQL injection attacks.
 - **Error Handling**: Comprehensive error handling and logging.
+- **Route level integration testing**: There are no controller or route level integration tests.
