@@ -15,6 +15,7 @@ describe("Movies Service", () => {
         "genres",
         "releaseDate",
         "budget",
+        "movieId",
       ];
       const receivedProperties = Object.keys(movies[0]);
 
@@ -45,9 +46,41 @@ describe("Movies Service", () => {
   describe("get movie details", () => {
     test("should fetch movie details by IMDb ID", async () => {
       const movies = await moviesService.getMovies({});
-      const movieId = movies[0].imdbId;
+      const { movieId } = movies[0];
       const movie = await moviesService.getMovieDetails(movieId);
-      expect(movie).toHaveProperty("imdbId", movieId);
+      expect(movie).toHaveProperty("movieId", movieId);
+    });
+
+    test("should return the movie with the correct properties", async () => {
+      // imdb id, title, description, release date, budget, runtime, average rating, genres, original language, production companies
+      const expectedProperties = [
+        "movieId",
+        "imdbId",
+        "title",
+        "description",
+        "releaseDate",
+        "budget",
+        "runtime",
+        "averageRating",
+        "genres",
+        "originalLanguage",
+        "productionCompanies",
+      ];
+      const movies = await moviesService.getMovies({});
+      const movie = await moviesService.getMovieDetails(movies[0].movieId);
+
+      const receivedProperties = Object.keys(movie);
+      expect(receivedProperties.length).toEqual(expectedProperties.length);
+      expectedProperties.forEach((property) => {
+        expect(receivedProperties).toContain(property);
+      });
+    });
+
+    test("should format the budget to USD", async () => {
+      const movies = await moviesService.getMovies({});
+      const movie = await moviesService.getMovieDetails(movies[0].movieId);
+      const dollarRegex = /^\$\d+(,\d{3})*(\.\d{2})?$/;
+      expect(movie.budget).toMatch(dollarRegex);
     });
   });
 });
