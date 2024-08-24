@@ -96,15 +96,15 @@ describe("Movies Service", () => {
     });
 
     test("should format the budget to USD", async () => {
-      const movies = await moviesService.getMovies({});
-      const movie = await moviesService.getMovieDetails(movies[0].movieId);
+      const movieId = 81; // exists in both movies and ratings db
+      const movie = await moviesService.getMovieDetails(movieId);
       const dollarRegex = /^\$\d+(,\d{3})*(\.\d{2})?$/;
       expect(movie.budget).toMatch(dollarRegex);
     });
 
     test("should calculate the average rating", async () => {
-      const movies = await moviesService.getMovies({});
-      const movie = await moviesService.getMovieDetails(movies[0].movieId);
+      const movieId = 81; // exists in both movies and ratings db
+      const movie = await moviesService.getMovieDetails(movieId);
       expect(movie.averageRating).toBeGreaterThanOrEqual(0);
     });
   });

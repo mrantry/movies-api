@@ -13,46 +13,78 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   const yearFilter = year ? `WHERE releaseDate LIKE '${year}%'` : "";
   const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : ""; // should probably filter by genre id, not name
   const sorting = `ORDER BY releaseDate DESC`;
-  const pagination = `LIMIT ? OFFSET ?`;
+  const pagination = `LIMIT ${pageSize} OFFSET ${offset}`;
 
   const sql = [columsSql, yearFilter, genreFilter, sorting, pagination].join(
     " "
   );
 
-  const movies = await moviesDb.all(sql, [pageSize, offset]);
-  const formattedMovies = movies.map((movie) => ({
-    ...movie,
-    budget: formatToUSD(movie.budget),
-    genres: formatGenres(movie.genres),
-  }));
-  return formattedMovies;
+  try {
+    const movies = await moviesDb.all(sql);
+    const formattedMovies = movies.map((movie) => ({
+      ...movie,
+      budget: movie.budget ? formatToUSD(movie.budget) : "Budget not available",
+      genres: movie.genres
+        ? formatGenres(movie.genres)
+        : "Genres not available",
+    }));
+    return formattedMovies;
+  } catch (error) {
+    console.error(error);
+    throw new Error("An error occurred");
+  }
 };
 
 exports.getMovieDetails = async (movie_id) => {
   const movieSql = `
-    SELECT movieId, imdbId, title, releaseDate, budget, runtime, genres, productionCompanies
+    SELECT movieId, imdbId, title, releaseDate, budget, runtime, genres, productionCompanies, overview, language
     FROM movies 
-    WHERE movieId = ?
+    WHERE movieId = ${movie_id}
   `;
-  const ratingsSql = `SELECT rating FROM ratings WHERE movieId = ?`;
 
-  const [movie, ratings] = await Promise.all([
-    moviesDb.get(movieSql, [movie_id]),
-    ratingsDb.all(ratingsSql, [movie_id]),
-  ]);
+  const ratingsSql = `SELECT rating FROM ratings WHERE movieId = ${movie_id}`;
 
-  const averageRating =
-    ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
+  try {
+    const [movie, ratings] = await Promise.all([
+      moviesDb.get(movieSql),
+      ratingsDb.all(ratingsSql),
+    ]);
 
-  const formattedMovies = {
-    ...movie,
-    averageRating,
-    budget: formatToUSD(movie.budget),
-    description: movie.overview,
-    originalLanguage: movie.language,
-    productionCompanies: formatProductionCompanies(movie.productionCompanies),
-    genres: formatGenres(movie.genres),
-  };
+    const averageRating =
+      ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
 
-  return formattedMovies;
+    const {
+      movieId,
+      imdbId,
+      title,
+      releaseDate,
+      budget,
+      runtime,
+      genres,
+      productionCompanies,
+      overview,
+      language,
+    } = movie;
+
+    const formattedMovie = {
+      movieId: movieId || "Movie ID not available",
+      imdbId: imdbId || "IMDb ID not available",
+      title: title || "Title not available",
+      releaseDate: releaseDate || "Release date not available",
+      runtime: runtime ? `${runtime} minutes` : "Runtime not available",
+      averageRating: averageRating ? averageRating : "Rating not available",
+      budget: budget ? formatToUSD(budget) : "Budget not available",
+      description: overview || "Description not available",
+      originalLanguage: language || "Language not available",
+      productionCompanies: productionCompanies
+        ? formatProductionCompanies(productionCompanies)
+        : "Production companies not available",
+      genres: genres ? formatGenres(genres) : "Genres not available",
+    };
+
+    return formattedMovie;
+  } catch (error) {
+    console.error(error);
+    throw new Error("An error occurred");
+  }
 };
