@@ -63,7 +63,7 @@ By default, the server runs on `http://localhost:3000`.
 #### Example Request
 
 ```bash
-GET http://localhost:3000/api/movies?page=1&pageSize=10&year=1984&genre=12
+GET http://localhost:3000/api/movies?page=1&pageSize=10&year=1984&genre=drama
 ```
 
 #### Example Response
