@@ -36,8 +36,20 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
 };
 
 exports.getMovieDetails = async (movie_id) => {
+  const columns = [
+    "movieId",
+    "imdbId",
+    "title",
+    "releaseDate",
+    "budget",
+    "runtime",
+    "genres",
+    "productionCompanies",
+    "overview",
+    "language",
+  ];
   const movieSql = `
-    SELECT movieId, imdbId, title, releaseDate, budget, runtime, genres, productionCompanies, overview, language
+    SELECT ${columns.join(", ")}
     FROM movies 
     WHERE movieId = ${movie_id}
   `;
@@ -72,7 +84,9 @@ exports.getMovieDetails = async (movie_id) => {
       title: title || "Title not available",
       releaseDate: releaseDate || "Release date not available",
       runtime: runtime ? `${runtime} minutes` : "Runtime not available",
-      averageRating: averageRating ? averageRating : "Rating not available",
+      averageRating: averageRating
+        ? averageRating.toFixed(2)
+        : "Rating not available",
       budget: budget ? formatToUSD(budget) : "Budget not available",
       description: overview || "Description not available",
       originalLanguage: language || "Language not available",
