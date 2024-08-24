@@ -73,6 +73,10 @@ exports.getMovieDetails = async (movie_id) => {
       ratingsDb.all(ratingsSql),
     ]);
 
+    if (!movie) {
+      return null;
+    }
+
     const averageRating =
       ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
 
