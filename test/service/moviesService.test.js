@@ -49,13 +49,13 @@ describe("Movies Service", () => {
         expect(movie.releaseDate).toMatch(/^2020-/);
       });
     });
-  });
 
-  test("should filter movies by genre", async () => {
-    const movies = await moviesService.getMovies({ genre: "Drama" });
-    expect(movies.length).toBeGreaterThan(0);
-    movies.forEach((movie) => {
-      expect(movie.genres).toContain("Drama");
+    test("should filter movies by genre name", async () => {
+      const movies = await moviesService.getMovies({ genre: "Drama" });
+      expect(movies.length).toBeGreaterThan(0);
+      movies.forEach((movie) => {
+        expect(movie.genres).toContain("Drama");
+      });
     });
   });
 
