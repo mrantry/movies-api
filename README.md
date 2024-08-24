@@ -11,15 +11,13 @@ This project is a Node.js-based Movie API service that provides endpoints to ret
 - **Secure Queries**: Uses parameterized queries to prevent SQL injection attacks.
 - **Modular Design**: The code is organized into services, database integrations, and utility functions for easy maintenance.
 
-````
-
 ## Installation
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/mrantry/movie-api-service.git
    cd movie-api-service
-````
+   ```
 
 2. **Install dependencies**:
 
