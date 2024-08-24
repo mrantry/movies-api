@@ -64,7 +64,7 @@ By default, the server runs on `http://localhost:3000`.
 
 - **URL**: `/api/movies/:movie_id`
 - **Method**: `GET`
-- **Response**: JSON array of movies with the following fields:
+- **Response**: JSON with the following fields:
   - `movieId`
   - `imdbId`
   - `title`
