@@ -9,10 +9,19 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   // Calculate offset for pagination
   const offset = (page - 1) * pageSize;
 
-  const columsSql = `SELECT movieId, imdbId, title, genres, releaseDate, budget FROM movies`;
+  const columns = [
+    "movieId",
+    "imdbId",
+    "title",
+    "genres",
+    "releaseDate",
+    "budget",
+  ];
+
+  const columsSql = `SELECT ${columns.join(", ")} FROM movies`;
   const yearFilter = year ? `WHERE releaseDate LIKE '${year}%'` : "";
   const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : ""; // should probably filter by genre id, not name
-  const sorting = `ORDER BY releaseDate DESC`;
+  const sorting = year ? `ORDER BY releaseDate DESC` : "";
   const pagination = `LIMIT ${pageSize} OFFSET ${offset}`;
 
   const sql = [columsSql, yearFilter, genreFilter, sorting, pagination].join(
