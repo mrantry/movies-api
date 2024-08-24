@@ -11,6 +11,10 @@ exports.formatToUSD = (dollarAmount) => {
   })}`;
 };
 
+// Helper functions to format genres and production companies
+// I've taken some liberties to make the returned fields more human-readable
+// This is not necessary, but I think it makes the data more user-friendly
+
 exports.formatGenres = (genres) => {
   const genresArray = JSON.parse(genres);
   const genresString = genresArray.map((genre) => genre.name).join(", ");

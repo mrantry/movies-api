@@ -19,7 +19,13 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   ];
 
   // NOTE: This is a naive implementation of filtering by genre.
-  // NOTE: This implementation is vulnerable to SQL injection.
+  // This implementation is vulnerable to SQL injection.
+  // In a real-world application, I would use parameterized queries to avoid SQL injection.
+
+  // NOTE: Genre is actually a JSON array and there are things that can be done to improve this query
+  // For example, we could use the JSON1 extension to SQLite to query the JSON array directly
+  // However, for the purpose of this example, I'm keeping it simple.
+
   const columsSql = `SELECT ${columns.join(", ")} FROM movies`;
   const yearFilter = year ? `WHERE releaseDate LIKE '${year}%'` : "";
   const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : "";
@@ -77,6 +83,7 @@ exports.getMovieDetails = async (movie_id) => {
       return null;
     }
 
+    // Calculate the average rating
     const averageRating =
       ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
 
@@ -92,6 +99,10 @@ exports.getMovieDetails = async (movie_id) => {
       overview,
       language,
     } = movie;
+
+    // Lots going on here. In the real world, I would need more information about who is consuming the API.
+    // It could be nice to only return the fields that are asked for
+    // I would also consider returning the raw data and letting the consumer format it as needed
 
     const formattedMovie = {
       movieId: movieId || "Movie ID not available",
