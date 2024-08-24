@@ -41,6 +41,22 @@ describe("Movies Service", () => {
         expect(movie.budget).toMatch(dollarRegex);
       });
     });
+
+    test("should filter movies by year", async () => {
+      const movies = await moviesService.getMovies({ year: 2020 });
+      expect(movies.length).toBeGreaterThan(0);
+      movies.forEach((movie) => {
+        expect(movie.releaseDate).toMatch(/^2020-/);
+      });
+    });
+  });
+
+  test("should filter movies by genre", async () => {
+    const movies = await moviesService.getMovies({ genre: "Drama" });
+    expect(movies.length).toBeGreaterThan(0);
+    movies.forEach((movie) => {
+      expect(movie.genres).toContain("Drama");
+    });
   });
 
   describe("get movie details", () => {

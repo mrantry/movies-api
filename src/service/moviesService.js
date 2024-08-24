@@ -1,15 +1,19 @@
 const { moviesDb, ratingsDb } = require("../db/db");
 const { formatToUSD } = require("../util/moviesUtil");
 
-exports.getMovies = async ({ page = 1, pageSize = 50 }) => {
+exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   // Calculate offset for pagination
   const offset = (page - 1) * pageSize;
 
-  const sql = `
-         SELECT movieId, imdbId, title, genres, releaseDate, budget
-         FROM movies
-         LIMIT ? OFFSET ?;
-     `;
+  const columsSql = `SELECT movieId, imdbId, title, genres, releaseDate, budget FROM movies`;
+  const yearFilter = year ? `WHERE releaseDate LIKE '${year}%'` : "";
+  const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : ""; // should probably filter by genre id, not name
+  const sorting = `ORDER BY releaseDate DESC`;
+  const pagination = `LIMIT ? OFFSET ?`;
+
+  const sql = [columsSql, yearFilter, genreFilter, sorting, pagination].join(
+    " "
+  );
 
   const movies = await moviesDb.all(sql, [pageSize, offset]);
   const formattedMovies = movies.map((movie) => ({
