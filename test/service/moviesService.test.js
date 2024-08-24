@@ -42,19 +42,21 @@ describe("Movies Service", () => {
       });
     });
 
-    test("should filter movies by year", async () => {
-      const movies = await moviesService.getMovies({ year: 2020 });
-      expect(movies.length).toBeGreaterThan(0);
-      movies.forEach((movie) => {
-        expect(movie.releaseDate).toMatch(/^2020-/);
+    describe("should be able to filter movies", () => {
+      test("by year", async () => {
+        const movies = await moviesService.getMovies({ year: 2020 });
+        expect(movies.length).toBeGreaterThan(0);
+        movies.forEach((movie) => {
+          expect(movie.releaseDate).toMatch(/^2020-/);
+        });
       });
-    });
 
-    test("should filter movies by genre name", async () => {
-      const movies = await moviesService.getMovies({ genre: "Drama" });
-      expect(movies.length).toBeGreaterThan(0);
-      movies.forEach((movie) => {
-        expect(movie.genres).toContain("Drama");
+      test("by genre name", async () => {
+        const movies = await moviesService.getMovies({ genre: "Drama" }); // should probably filter by genre id, not name
+        expect(movies.length).toBeGreaterThan(0);
+        movies.forEach((movie) => {
+          expect(movie.genres).toContain("Drama");
+        });
       });
     });
   });
@@ -82,6 +84,7 @@ describe("Movies Service", () => {
         "originalLanguage",
         "productionCompanies",
       ];
+
       const movies = await moviesService.getMovies({});
       const movie = await moviesService.getMovieDetails(movies[0].movieId);
 
@@ -97,6 +100,12 @@ describe("Movies Service", () => {
       const movie = await moviesService.getMovieDetails(movies[0].movieId);
       const dollarRegex = /^\$\d+(,\d{3})*(\.\d{2})?$/;
       expect(movie.budget).toMatch(dollarRegex);
+    });
+
+    test("should calculate the average rating", async () => {
+      const movies = await moviesService.getMovies({});
+      const movie = await moviesService.getMovieDetails(movies[0].movieId);
+      expect(movie.averageRating).toBeGreaterThanOrEqual(0);
     });
   });
 });
