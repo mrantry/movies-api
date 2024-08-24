@@ -10,3 +10,17 @@ exports.formatToUSD = (dollarAmount) => {
     maximumFractionDigits: 2,
   })}`;
 };
+
+exports.formatGenres = (genres) => {
+  const genresArray = JSON.parse(genres);
+  const genresString = genresArray.map((genre) => genre.name).join(", ");
+  return genresString;
+};
+
+exports.formatProductionCompanies = (productionCompanies) => {
+  const productionCompaniesArray = JSON.parse(productionCompanies);
+  const productionCompaniesString = productionCompaniesArray
+    .map((company) => company.name)
+    .join(", ");
+  return productionCompaniesString;
+};

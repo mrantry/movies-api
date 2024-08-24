@@ -1,5 +1,9 @@
 const { moviesDb, ratingsDb } = require("../db/db");
-const { formatToUSD } = require("../util/moviesUtil");
+const {
+  formatToUSD,
+  formatGenres,
+  formatProductionCompanies,
+} = require("../util/moviesUtil");
 
 exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   // Calculate offset for pagination
@@ -19,6 +23,7 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
   const formattedMovies = movies.map((movie) => ({
     ...movie,
     budget: formatToUSD(movie.budget),
+    genres: formatGenres(movie.genres),
   }));
   return formattedMovies;
 };
@@ -38,20 +43,6 @@ exports.getMovieDetails = async (movie_id) => {
 
   const averageRating =
     ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
-
-  const formatProductionCompanies = (productionCompanies) => {
-    const productionCompaniesArray = JSON.parse(productionCompanies);
-    const productionCompaniesString = productionCompaniesArray
-      .map((company) => company.name)
-      .join(", ");
-    return productionCompaniesString;
-  };
-
-  const formatGenres = (genres) => {
-    const genresArray = JSON.parse(genres);
-    const genresString = genresArray.map((genre) => genre.name).join(", ");
-    return genresString;
-  };
 
   const formattedMovies = {
     ...movie,
