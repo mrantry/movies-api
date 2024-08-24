@@ -18,9 +18,11 @@ exports.getMovies = async ({ page = 1, pageSize = 50, year, genre }) => {
     "budget",
   ];
 
+  // NOTE: This is a naive implementation of filtering by genre.
+  // NOTE: This implementation is vulnerable to SQL injection.
   const columsSql = `SELECT ${columns.join(", ")} FROM movies`;
   const yearFilter = year ? `WHERE releaseDate LIKE '${year}%'` : "";
-  const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : ""; // should probably filter by genre id, not name
+  const genreFilter = genre ? `WHERE genres LIKE '%${genre}%'` : "";
   const sorting = year ? `ORDER BY releaseDate DESC` : "";
   const pagination = `LIMIT ${pageSize} OFFSET ${offset}`;
 
