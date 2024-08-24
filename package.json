@@ -7,12 +7,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
+    "jest": "^29.7.0"
   }
 }
